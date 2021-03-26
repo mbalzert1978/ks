@@ -1,16 +1,18 @@
-import sqlite3 #import der lib
+import sqlite3, csv, io #import der lib
 
 conn = sqlite3.connect("Chinook_Sqlite_AutoIncrementPKs.sqlite")
 
 cur = conn.cursor()
 # Ansprechen der lokalen sqlite Datenbank
-cur.execute("SELECT name \
+cur.execute("SELECT * \
                     FROM \
-                    sqlite_master \
-                    WHERE \
-                    type ='table' AND \
-                    name NOT LIKE 'sqlite_%';")
+                    Customer \
+            ;")
 
+data_csv = "data.csv"
 
-print(cur.fetchall())
+list_data = cur.fetchall()
+with open(data_csv, 'w', encoding="utf-8") as f:
+    writer = csv.writer(f, delimiter=";", lineterminator="\n", quoting=csv.QUOTE_NONNUMERIC)
+    writer.writerows(list_data)
 conn.close() 
