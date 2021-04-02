@@ -12,6 +12,7 @@ def show_tables():
                         WHERE \
                         type ='table' AND \
                         name NOT LIKE 'sqlite_%';")
-    return cur.fetchall()
-    conn.close() 
+    return_value = cur.fetchall()
+    conn.close()
+    return return_value
 print(show_tables())
