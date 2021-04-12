@@ -1,6 +1,6 @@
-import sqlite3, csv #import der lib
+import sqlite3, csv, os #import der lib
 def export_customer_to_csv():
-    conn = sqlite3.connect("Chinook_Sqlite_AutoIncrementPKs.sqlite")
+    conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), "Chinook_Sqlite_AutoIncrementPKs.sqlite" ))
 
     cur = conn.cursor()
     # Ansprechen der lokalen sqlite Datenbank
