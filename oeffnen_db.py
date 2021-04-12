@@ -12,7 +12,8 @@ parser.add_argument('--delimiter', action='store',
                     help='Stores a delimiter', default=";")
 table = parser.parse_args()
 
-def table_to_csv(db = os.path.join(os.path.dirname(__file__),"Chinook_Sqlite_AutoIncrementPKs.sqlite"), table = "Customer", delimiter = ";"):
+def table_to_csv(db = os.path.join(os.path.dirname(__file__),"Chinook_Sqlite_AutoIncrementPKs.sqlite"), 
+                 table = "Customer", delimiter = ";"):
     conn = sqlite3.connect(f"{db}")
     cur = conn.cursor()
     # Ansprechen der lokalen sqlite Datenbank
