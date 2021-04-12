@@ -8,9 +8,8 @@ def export_customer_to_csv():
                         FROM \
                         Customer \
                 ;")
-    data_csv = "data.csv"
     list_data = cur.fetchall()
-    with open(data_csv, 'w', encoding="utf-8") as f:
+    with open((os.path.join(os.path.dirname(__file__), "data.csv")), 'w', encoding="utf-8") as f:
         writer = csv.writer(f, delimiter=";", lineterminator="\n", quoting=csv.QUOTE_NONNUMERIC)
         writer.writerows(list_data)
     conn.close() 
