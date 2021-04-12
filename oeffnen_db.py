@@ -1,4 +1,4 @@
-import sqlite3, csv, argparse #import der lib
+import sqlite3, csv, os,  argparse #import der lib
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--db', action='store',
@@ -12,7 +12,7 @@ parser.add_argument('--delimiter', action='store',
                     help='Stores a delimiter', default=";")
 table = parser.parse_args()
 
-def table_to_csv(db = "Chinook_Sqlite_AutoIncrementPKs.sqlite", table = "Customer", delimiter = ";"):
+def table_to_csv(db = os.path.join(os.path.dirname(__file__),"Chinook_Sqlite_AutoIncrementPKs.sqlite"), table = "Customer", delimiter = ";"):
     conn = sqlite3.connect(f"{db}")
     cur = conn.cursor()
     # Ansprechen der lokalen sqlite Datenbank
@@ -20,9 +20,8 @@ def table_to_csv(db = "Chinook_Sqlite_AutoIncrementPKs.sqlite", table = "Custome
                         FROM \
                         {table} \
                 ;")
-    data_csv = f"{table}.csv"
     list_data = cur.fetchall()
-    with open(data_csv, 'w', encoding="utf-8") as f:
+    with open(os.path.join(os.path.dirname(__file__), f"{table}.csv"), 'w', encoding="utf-8") as f:
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n", quoting=csv.QUOTE_NONNUMERIC)
         writer.writerows(list_data)
     conn.close() 
