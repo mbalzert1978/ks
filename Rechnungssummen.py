@@ -1,7 +1,8 @@
-import sqlite3 #import der lib
+import sqlite3, os #import der lib
 from openpyxl import Workbook #import der lib
 
-conn = sqlite3.connect("Chinook_Sqlite_AutoIncrementPKs.sqlite")
+conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), 
+                                    "Chinook_Sqlite_AutoIncrementPKs.sqlite"))
 cur = conn.cursor()
 # Ansprechen der lokalen sqlite Datenbank
 year_ = ["2010", "2011", "2012", "2013"]
@@ -35,5 +36,5 @@ for item_year in year_:
             _ = ws1.cell(column=2, row=counter, value=b)
             _ = ws1.cell(column=3, row=counter, value=c)
             counter += 1     
-wb.save("Rech_sum.xlsx")
+wb.save(os.path.join(os.path.dirname(__file__), "Rech_sum.xlsx"))
 conn.close() 
