@@ -1,6 +1,6 @@
-import sqlite3
+import sqlite3, os
 
-conn = sqlite3.connect("Chinook_Sqlite_AutoIncrementPKs.sqlite")
+conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), "Chinook_Sqlite_AutoIncrementPKs.sqlite"))
 cur = conn.cursor()
 # Ansprechen der lokalen sqlite Datenbank
 cur.execute(f"  SELECT  EmployeeId, LastName,   \
@@ -10,7 +10,7 @@ cur.execute(f"  SELECT  EmployeeId, LastName,   \
                         ;")
 
 list_data = cur.fetchall()
-# print(list_data)
+
 for item in list_data:
     if item[4] == None:
         print(f"{item[1]} {item[2]}, {item[3]} reports to noone")
