@@ -1,4 +1,4 @@
-import sqlite3, argparse #import der lib
+import sqlite3, argparse, os #import der lib
 from openpyxl import Workbook #import der lib
 
 parser = argparse.ArgumentParser()
@@ -7,7 +7,7 @@ parser.add_argument('--search', action='store',
                     help='Store a table', default="Rock")
 searching_ = parser.parse_args()
 
-conn = sqlite3.connect("Chinook_Sqlite_AutoIncrementPKs.sqlite")
+conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), "Chinook_Sqlite_AutoIncrementPKs.sqlite"))
 cur = conn.cursor()
 # Ansprechen der lokalen sqlite Datenbank
 cur.execute(f"select name as Songtitel,                                                 \
@@ -76,6 +76,6 @@ for key, value in dict_.items():
                 rcount +=1 
         sheetcount += 1
         rcount = 1
-wb.save(f"{searching_.search_}.xlsx")
+wb.save(os.path.join(os.path.dirname(__file__), f"{searching_.search_}.xlsx"))
 
 conn.close() 
