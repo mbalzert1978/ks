@@ -1,8 +1,11 @@
-import csv
 import argparse
-import sys, inspect
-import model
+import csv
+import inspect
+import sys
+
 import peewee as pw
+
+import model
 
 
 class SQLiteDataBase:
@@ -26,7 +29,10 @@ class SQLiteDataBase:
     def __repr__(self) -> str:
         return str(list(self.__models))
 
-    def get_table(self, tablename: str) -> dict:
+    def show(self, table: str) -> str:
+        return "\n".join(str(list(self.get_table(table).select())))
+
+    def get_table(self, tablename: str) -> pw.ModelBase:
         return self.__models.get(tablename, {"NotFound": None})
 
     def to_csv(self, filename: str, tablename: str, delimiter: str) -> None:
@@ -38,11 +44,11 @@ class SQLiteDataBase:
                 writer.writerow(row)
 
 
-def create_parser(args) -> argparse.ArgumentParser:
+def create_parser(args) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         (
             "Use create_model first!\n"
-            + "Script to open an SQLite database and "
+            + "\tScript to open an SQLite database and "
             + "extract a table and storing it as an .csv file."
         )
     )
@@ -90,7 +96,7 @@ if __name__ == "__main__":
     sql_db = SQLiteDataBase()
     sql_db.connect()
     if args.command == "show":
-        print(sql_db)
+        print(sql_db.show(args.table))
     elif args.command == "csv":
         sql_db.to_csv(
             filename=args.file, tablename=args.table, delimiter=args.delimiter
