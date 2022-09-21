@@ -30,7 +30,12 @@ class SQLiteDataBase:
         return str(list(self.__models))
 
     def show(self, table: str) -> str:
-        return "\n".join(str(list(self.get_table(table).select())))
+        return "\n".join(
+            ", ".join(
+                "{!s}={!r}".format(key, val) for (key, val) in row.items()
+            )
+            for row in self.get_table(table).select().dicts()
+        )
 
     def get_table(self, tablename: str) -> pw.ModelBase:
         return self.__models.get(tablename, {"NotFound": None})
