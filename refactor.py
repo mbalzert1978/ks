@@ -1,0 +1,87 @@
+import csv
+import argparse
+import sys
+import model
+
+
+class SQLiteDataBase:
+    def __init__(self) -> None:
+        self.__models: dict[str : model.BaseModel] = model.MODELS
+
+    def connect(self) -> None:
+        model.database.connect()
+
+    def __str__(self) -> str:
+        return "\n".join(list(self.__models))
+
+    def __repr__(self) -> str:
+        return str(list(self.__models))
+
+    def get_table(self, tablename: str) -> dict:
+        return self.__models.get(tablename, {"NotFound": None})
+
+    def to_csv(self, filename: str, tablename: str, delimiter: str) -> None:
+        table = self.get_table(tablename)
+        header = list(table.select().dicts()[0].keys())
+        with open(filename, "w") as csvfile:
+            writer = csv.DictWriter(csvfile, header, delimiter=delimiter)
+            for row in table.select().dicts():
+                writer.writerow(row)
+
+
+def create_parser(args) -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        (
+            "Script to open an SQLite database and "
+            + "extract a table and storing it as an .csv file."
+        )
+    )
+    subparser = parser.add_subparsers(dest="command", required=True)
+    _ = subparser.add_parser(
+        "show",
+        help="Command to ONLY show the table",
+    )
+    to_csv = subparser.add_parser(
+        "csv",
+        help="Command to extract the given table to an .csv file",
+    )
+    to_csv.add_argument(
+        "-d",
+        "--delimiter",
+        help="The delimiter to use for the .csv file. Default = ';'",
+        default=";",
+    )
+    to_csv.add_argument(
+        "-f",
+        "--file",
+        help="The name of the .csv file. Default = 'data.csv'",
+        default="data.csv",
+    )
+    parser.add_argument(
+        "-db",
+        "--database",
+        help=(
+            "Name of the SQLitedatabase. Default"
+            + " = Chinook_Sqlite_AutoIncrementPKs"
+        ),
+        required=True,
+    )
+    parser.add_argument(
+        "-t",
+        "--table",
+        help="Name of the table you want to access. Default = Customer",
+        default="Customer",
+    )
+    return parser.parse_args(args)
+
+
+if __name__ == "__main__":
+    args = create_parser(sys.argv[1:])
+    sql_db = SQLiteDataBase()
+    sql_db.connect()
+    if args.command == "show":
+        print(sql_db)
+    elif args.command == "csv":
+        sql_db.to_csv(
+            filename=args.file, tablename=args.table, delimiter=args.delimiter
+        )
