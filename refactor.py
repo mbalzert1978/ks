@@ -1,12 +1,21 @@
 import csv
 import argparse
-import sys
+import sys, inspect
 import model
+import peewee as pw
 
 
 class SQLiteDataBase:
     def __init__(self) -> None:
-        self.__models: dict[str : model.BaseModel] = model.MODELS
+        self.get_model()
+
+    def get_model(self) -> None:
+        self.__models = {
+            name: obj
+            for name, obj in inspect.getmembers(model)
+            if isinstance(obj, pw.ModelBase)
+            and not name.startswith(("Sqlite", "BaseM", "Model"))
+        }
 
     def connect(self) -> None:
         model.database.connect()
