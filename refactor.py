@@ -32,7 +32,8 @@ class SQLiteDataBase:
 def create_parser(args) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         (
-            "Script to open an SQLite database and "
+            "Use create_model first!\n"
+            + "Script to open an SQLite database and "
             + "extract a table and storing it as an .csv file."
         )
     )
