@@ -58,13 +58,17 @@ def create_parser(args) -> argparse.Namespace:
         )
     )
     subparser = parser.add_subparsers(dest="command", required=True)
-    _ = subparser.add_parser(
+    show = subparser.add_parser(
         "show",
         help="Command to ONLY show the table",
     )
     to_csv = subparser.add_parser(
         "csv",
         help="Command to extract the given table to an .csv file",
+    )
+    subparser.add_parser(
+        "all",
+        help="Show all available tables in the Database.",
     )
     to_csv.add_argument(
         "-d",
@@ -106,3 +110,5 @@ if __name__ == "__main__":
         sql_db.to_csv(
             filename=args.file, tablename=args.table, delimiter=args.delimiter
         )
+    elif args.command == "all":
+        print(sql_db)
