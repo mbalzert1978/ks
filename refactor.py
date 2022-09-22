@@ -14,6 +14,22 @@ args: list[str]
 nl: str
 
 
+def err(msg) -> None:
+    sys.stderr.write("\033[91m%s\033[0m\n" % msg)
+    sys.stderr.flush()
+
+
+class Validator:
+    @staticmethod
+    def validate_filepath(s) -> bool:
+        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        return all(c for c in s if c in valid_chars)
+
+    @staticmethod
+    def is_model():
+        return Path("model.py").is_file()
+
+
 class SQLiteDataBase:
     def __init__(self, database: pw.SqliteDatabase) -> None:
         self.__db = database
