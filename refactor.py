@@ -134,7 +134,6 @@ def check_model():
 
 
 def main(options, sql_db: SQLiteDataBase) -> None:
-    nl = "\n"
     if options.csv and options.table:
         sql_db.write_to_csv(
             filename=options.table
@@ -151,9 +150,10 @@ def main(options, sql_db: SQLiteDataBase) -> None:
 
 if __name__ == "__main__":
     raw_argv = sys.argv
+    nl = "\n"
     if not check_model():
         err("Missing required file 'model.py'.")
-        sys.stdout.write("Use create_model.py to create a model.\n")
+        sys.stdout.write("Use create_model.py to create a model." + nl)
         sys.exit(1)
     import model
 
