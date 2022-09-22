@@ -1,37 +1,39 @@
-import argparse
 import io
 import sys
 from contextlib import redirect_stdout
+from getpass import getpass
+from optparse import OptionParser
 
 import black
 from pwiz import make_introspector, print_models
 
 
-def create_parser(args) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        "Script to create an model to connect to an SQLite database."
-    )
-    parser.add_argument(
-        "-db",
-        "--database",
-        help=(
-            "Name of the SQLitedatabase. Default"
-            + " = Chinook_Sqlite_AutoIncrementPKs"
-        ),
-        required=True,
-    )
-    parser.add_argument(
-        "-m",
-        "--modelname",
-        help="Name of the model. Default = model.py",
-        default="model.py",
-    )
-    return parser.parse_args(args)
+def err(msg):
+    sys.stderr.write("\033[91m%s\033[0m\n" % msg)
+    sys.stderr.flush()
+
+
+def get_option_parser():
+    parser = OptionParser(usage="usage: %prog [options] database_name")
+    ao = parser.add_option
+    ao("-H", "--host", dest="host")
+    ao("-p", "--port", dest="port", type="int")
+    ao("-u", "--user", dest="user")
+    ao("-P", "--password", dest="password", action="store_true")
+    return parser
+
+
+def get_connect_kwargs(options):
+    ops = ("host", "port", "user")
+    kwargs = dict((o, getattr(options, o)) for o in ops if getattr(options, o))
+    if options.password:
+        kwargs["password"] = getpass()
+    return kwargs
 
 
 def create_model(args):
     model = get_model_str(args)
-    model = fix_unknown_fields(model)
+    model = replace_unknown_fields_to_text_fields(model)
     model = format_str(model)
     return model
 
@@ -49,23 +51,35 @@ def format_str(model: str):
 
 
 def get_model_str(args):
-    intro_spector = make_introspector("sqlite", args.database)
+    ispector = make_introspector("sqlite", args[-1])
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        print_models(intro_spector)
+        print_models(ispector)
     return buffer.getvalue()
 
 
-def fix_unknown_fields(model: str):
+def replace_unknown_fields_to_text_fields(model: str):
     return model[:158] + model[159:].replace(r"UnknownField", r"TextField")
 
 
-def save_model(args, model: str):
-    with open(args.modelname, "w") as file:
+def save_model_to_file(model: str):
+    with open("model.py", "w") as file:
         file.writelines(model)
 
 
-if __name__ == "__main__":
-    args = create_parser(sys.argv[1:])
+def main(args):
     model = create_model(args)
-    save_model(args, model)
+    save_model_to_file(model)
+
+
+if __name__ == "__main__":
+    raw_argv = sys.argv
+    parser = get_option_parser()
+    options, args = parser.parse_args()
+    if len(args) < 1:
+        err('Missing required parameter "database"')
+        parser.print_help()
+        sys.exit(1)
+    connect = get_connect_kwargs(options)
+    database = args[-1]
+    main(args)
