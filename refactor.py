@@ -87,14 +87,12 @@ class SQLiteDataBase:
         return filename
 
 
-def err(msg) -> None:
-    sys.stderr.write("\033[91m%s\033[0m\n" % msg)
-    sys.stderr.flush()
-
-
-def valid_filepath(s) -> bool:
-    valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-    return all(c for c in s if c in valid_chars)
+def get_connect_kwargs(options):
+    ops = ("host", "port", "user")
+    kwargs = dict((o, getattr(options, o)) for o in ops if getattr(options, o))
+    if options.password:
+        kwargs["password"] = getpass()
+    return kwargs
 
 
 def get_option_parser() -> OptionParser:
@@ -127,7 +125,7 @@ def get_option_parser() -> OptionParser:
     )
     ao(
         "-c",
-        "--to-csv",
+        "--csv",
         action="store_true",
         dest="csv",
         help="Extract the given table to an .csv file",
@@ -135,21 +133,9 @@ def get_option_parser() -> OptionParser:
     return parser
 
 
-def get_connect_kwargs(options):
-    ops = ("host", "port", "user")
-    kwargs = dict((o, getattr(options, o)) for o in ops if getattr(options, o))
-    if options.password:
-        kwargs["password"] = getpass()
-    return kwargs
-
-
-def check_model():
-    return Path("model.py").is_file()
-
-
 def main(options, sql_db: SQLiteDataBase) -> None:
     if options.csv and options.table:
-        sql_db.write_to_csv(
+        sql_db.write_csv(
             filename=options.table
             if not options.filename
             else options.filename,
@@ -157,7 +143,7 @@ def main(options, sql_db: SQLiteDataBase) -> None:
             delimiter=options.delimiter,
         )
     elif options.table:
-        sys.stdout.write(sql_db.show_table(options.table) + nl)
+        sys.stdout.write(sql_db._show_table(options.table) + nl)
     else:
         sys.stdout.write(str(sql_db) + nl)
 
@@ -165,7 +151,7 @@ def main(options, sql_db: SQLiteDataBase) -> None:
 if __name__ == "__main__":
     raw_argv = sys.argv
     nl = "\n"
-    if not check_model():
+    if not Validator.is_model():
         err("Missing required file 'model.py'.")
         sys.stdout.write("Use create_model.py to create a model." + nl)
         sys.exit(1)
@@ -182,7 +168,7 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(1)
     if options.filename:
-        if not valid_filepath(options.filename):
+        if not Validator.validate_filepath(options.filename):
             err('"filename" must be a valid file/path.')
             parser.print_help()
             sys.exit(1)
@@ -190,5 +176,5 @@ if __name__ == "__main__":
     database = args[-1]
     database = pw.SqliteDatabase(database, **connect)
     sql_db = SQLiteDataBase(database)
-    sql_db.connect()
+    sql_db._connect()
     main(options, sql_db)
