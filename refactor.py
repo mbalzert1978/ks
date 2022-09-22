@@ -14,9 +14,6 @@ args: list[str]
 
 
 class SQLiteDataBase:
-    class TableError(BaseException):
-        pass
-
     def __init__(self, database: pw.SqliteDatabase) -> None:
         self.__db = database
         self.get_model()
