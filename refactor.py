@@ -11,6 +11,7 @@ import peewee as pw
 
 options: optparse.Values
 args: list[str]
+nl: str
 
 
 class SQLiteDataBase:
@@ -133,6 +134,7 @@ def check_model():
 
 
 def main(options, sql_db: SQLiteDataBase) -> None:
+    nl = "\n"
     if options.csv and options.table:
         sql_db.write_to_csv(
             filename=options.table
@@ -142,16 +144,16 @@ def main(options, sql_db: SQLiteDataBase) -> None:
             delimiter=options.delimiter,
         )
     elif options.table:
-        sys.stdout.write(sql_db.show_table(options.table))
+        sys.stdout.write(sql_db.show_table(options.table) + nl)
     else:
-        sys.stdout.write(str(sql_db))
+        sys.stdout.write(str(sql_db) + nl)
 
 
 if __name__ == "__main__":
     raw_argv = sys.argv
     if not check_model():
         err("Missing required file 'model.py'.")
-        sys.stdout.write("Use create_model.py to create a model.")
+        sys.stdout.write("Use create_model.py to create a model.\n")
         sys.exit(1)
     import model
 
