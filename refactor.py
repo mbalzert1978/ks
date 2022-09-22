@@ -33,57 +33,55 @@ class Validator:
 class SQLiteDataBase:
     def __init__(self, database: pw.SqliteDatabase) -> None:
         self.__db = database
-        self.get_model()
+        self.__set_model()
 
-    def get_model(self) -> None:
-        self.__models = {
+    def __set_model(self) -> None:
+        self.__model = {
             name: obj
             for name, obj in inspect.getmembers(model)
             if isinstance(obj, pw.ModelBase)
             and not name.startswith(("Sqlite", "BaseM", "Model"))
         }
 
-    def connect(self) -> None:
+    def _connect(self) -> None:
         self.__db.connect()
 
     def __str__(self) -> str:
-        return "\n".join(list(self.__models))
+        return "\n".join(list(self.__model))
 
     def __repr__(self) -> str:
-        return str(list(self.__models))
+        return str(list(self.__model))
 
-    def show_table(self, table: str) -> str:
+    def _show_table(self, table: str) -> str:
         return "\n".join(
             ", ".join(
                 "{!s}={!r}".format(key, val) for (key, val) in row.items()
             )
-            for row in self.get_table(table).select().dicts()
+            for row in self.__get_table(table).select().dicts()
         )
 
-    def get_table(self, tablename: str) -> pw.ModelBase:
-        table = self.__models.get(tablename)
+    def __get_table(self, tablename: str) -> pw.ModelBase:
+        table = self.__model.get(tablename)
         if table:
             return table
         err("The table was not found in the database")
         sys.stdout.write(str(self))
         sys.exit(1)
 
-    def write_to_csv(
-        self, filename: str, tablename: str, delimiter: str
-    ) -> None:
-        filename = self.fix_file_extension(filename)
-        table = self.get_table(tablename)
-        header = self.extract_header(table)
+    def write_csv(self, filename: str, tablename: str, delimiter: str) -> None:
+        filename = self.__fix_file_extension(filename)
+        table = self.__get_table(tablename)
+        header = self.__extract_header(table)
         with open(filename, "w") as csvfile:
             writer = csv.DictWriter(csvfile, header, delimiter=delimiter)
             for row in table.select().dicts():
                 writer.writerow(row)
 
-    def extract_header(self, table: pw.ModelBase) -> list[str]:
+    def __extract_header(self, table: pw.ModelBase) -> list[str]:
         header = list(table.select().dicts()[0].keys())
         return header
 
-    def fix_file_extension(self, filename: str) -> str:
+    def __fix_file_extension(self, filename: str) -> str:
         if not filename.endswith(".csv"):
             filename += ".csv"
         return filename
