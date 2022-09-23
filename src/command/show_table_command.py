@@ -3,6 +3,7 @@ from abc import abstractmethod
 
 import peewee as pw
 from src.command.command import Command
+from src.helper.helperlib import err
 
 
 class SelectTableCommand(Command):
@@ -22,7 +23,7 @@ class SelectTableCommand(Command):
         )
 
 
-class SelectCommand(SelectTableCommand):
+class SelectAllCommand(SelectTableCommand):
     def __init__(self, tablename: str) -> None:
         super().__init__()
         self.__table = tablename
@@ -32,6 +33,6 @@ class SelectCommand(SelectTableCommand):
         table = self._app._model.get(self.__table)
         if table:
             return table
-        self.err()
+        err(self.err_msg)
         sys.stdout.write(str(self))
         sys.exit(1)
