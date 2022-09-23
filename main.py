@@ -1,7 +1,7 @@
 import optparse
 import sys
 
-from src.helper.helperlib import Validator, err, get_connect_kwargs
+from src.helper.helperlib import Validator, err
 from src.main import main
 from src.parser.option_parser import get_option_parser
 
