@@ -33,15 +33,15 @@ class SQLiteDataBase:
     def __repr__(self) -> str:
         return str(list(self._model))
 
-    def show_table(self) -> Optional[str]:
+    def select_all_table(self) -> Optional[str]:
         return self.__commands.get(
-            "select_table", lambda: self._raise(NotImplementedError)
+            "select_all_table", lambda: self._raise(NotImplementedError)
         ).execute()
 
     def write_csv(self, filename: str, delimiter: str) -> None:
         filename = self.__fix_file_extension(filename)
         table = self.__commands.get(
-            "select_table", lambda: self._raise(NotImplementedError)
+            "select_all_table", lambda: self._raise(NotImplementedError)
         )._get_table()
         header = extract_header(table)
         with open(filename, "w") as csvfile:

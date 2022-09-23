@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.command.show_table_command import SelectCommand
+from src.command.show_table_command import SelectAllCommand
 
 
 class Creator(Protocol):
@@ -12,4 +12,4 @@ class Creator(Protocol):
 class CreateSelectTable(Creator):
     @staticmethod
     def factor_method(*args):
-        return SelectCommand(*args)
+        return SelectAllCommand(*args)

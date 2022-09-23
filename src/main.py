@@ -4,7 +4,7 @@ from src.sqlite.sqlitedatabase import SQLiteDataBase
 
 def main(options, model) -> None:
     commands = {
-        "select_table": CreateSelectTable.factor_method(options.table),
+        "select_all_table": CreateSelectTable.factor_method(options.table),
     }
     sql_db = SQLiteDataBase(commands, model)
     if options.csv and options.table:
@@ -15,6 +15,6 @@ def main(options, model) -> None:
             delimiter=options.delimiter,
         )
     elif options.table:
-        print(sql_db.show_table())
+        print(sql_db.select_all_table())
     else:
         print(sql_db)
