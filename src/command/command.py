@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import sys
 from typing import Any, Optional
 
 
