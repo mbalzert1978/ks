@@ -1,9 +1,14 @@
 import csv
 import inspect
+from pathlib import Path
 from typing import Optional
 
 import peewee as pw
-from src.helper.helperlib import extract_header
+from src.helper.helperlib import (
+    create_file,
+    extract_header,
+    fix_file_extension_csv,
+)
 
 
 class SQLiteDataBase:
@@ -48,12 +53,10 @@ class SQLiteDataBase:
             "select_all_table", lambda: self._raise(NotImplementedError)
         )._get_table()
         header = extract_header(table)
-        with open(filename, "w") as csvfile:
+        file = Path(filename)
+        create_file(file)
+        with file.open("w") as csvfile:
             writer = csv.DictWriter(csvfile, header, delimiter=delimiter)
+            writer.writeheader()
             for row in table.select().dicts():
                 writer.writerow(row)
-
-    def __fix_file_extension(self, filename: str) -> str:
-        if not filename.endswith(".csv"):
-            filename += ".csv"
-        return filename
