@@ -28,8 +28,9 @@ def replace_unknown_fields_to_text_fields(model: str):
 
 
 def save_model_to_file(model: str):
-    with open("src/model/model.py", "w") as file:
-        file.writelines(model)
+    with Path(Path.cwd() / "model.py") as file:
+        file.touch()
+        file.write_text(model)
 
 
 def get_connect_kwargs(options):
