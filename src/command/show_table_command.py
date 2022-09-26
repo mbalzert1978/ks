@@ -16,9 +16,7 @@ class SelectTableCommand(Command):
 
     def execute(self) -> str:
         return "\n".join(
-            ", ".join(
-                "{!s}={!r}".format(key, val) for (key, val) in row.items()
-            )
+            ", ".join("{!s}{!r}".format(key, val) for key, val in row.items())
             for row in self._get_table().select().dicts()
         )
 
