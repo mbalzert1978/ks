@@ -13,6 +13,10 @@ class SQLiteDataBase:
         self.__set_commands()
 
     def _raise(self, ex):
+        """
+        raises the given Exception
+        :ex:`Exception`
+        """
         raise ex
 
     def __set_commands(self) -> None:
