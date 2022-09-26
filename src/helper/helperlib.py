@@ -69,6 +69,15 @@ def fix_file_extension_csv(filename: str) -> str:
     return filename
 
 
+def create_file(file: Path) -> None:
+    """
+    :file:`pathlib.Path`
+    creates the given file if it does not already exist
+    """
+    if not file.exists():
+        file.touch()
+
+
 class Validator:
     @staticmethod
     def validate_filepath(s) -> bool:
