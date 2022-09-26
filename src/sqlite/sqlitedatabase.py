@@ -43,7 +43,7 @@ class SQLiteDataBase:
         ).execute()
 
     def write_csv(self, filename: str, delimiter: str) -> None:
-        filename = self.__fix_file_extension(filename)
+        filename = fix_file_extension_csv(filename)
         table = self.__commands.get(
             "select_all_table", lambda: self._raise(NotImplementedError)
         )._get_table()
