@@ -58,6 +58,17 @@ def format_str(model: str):
     )
 
 
+def fix_file_extension_csv(filename: str) -> str:
+    """
+    checks the given filename for the extension .csv
+    and appends it if necessary.
+    :filename:`str`
+    """
+    if not filename.endswith(".csv"):
+        filename += ".csv"
+    return filename
+
+
 class Validator:
     @staticmethod
     def validate_filepath(s) -> bool:
