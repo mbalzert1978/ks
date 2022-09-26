@@ -16,7 +16,7 @@ if __name__ == "__main__":
         err("Missing required file 'model.py'.")
         print("Use create_model.py to create a model.")
         sys.exit(1)
-    import src.model.model as model
+    import model
 
     parser = get_option_parser(True)
     options, args = parser.parse_args()
