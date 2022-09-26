@@ -77,4 +77,5 @@ class Validator:
 
     @staticmethod
     def is_model():
-        return Path("src/model/model.py").is_file()
+        model_file = Path(Path.cwd() / "model.py")
+        return model_file.exists()
