@@ -7,7 +7,6 @@ from getpass import getpass
 from optparse import OptionParser
 from pathlib import Path
 
-import peewee as pw
 
 options: optparse.Values
 args: list[str]
