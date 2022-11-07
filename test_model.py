@@ -12,7 +12,7 @@ class Album(SQLModel, table=True):
 
 class Artist(SQLModel, table=True):
     ArtistId: int | None = Field(default=None, primary_key=True)
-    Name: str
+    Name: str | None = Field(default=None)
 
 
 class Customer(SQLModel, table=True):
@@ -34,7 +34,7 @@ class Customer(SQLModel, table=True):
 
 
 class Employee(SQLModel, table=True):
-    EmployeeId: str | None = Field(default=None, primary_key=True)
+    EmployeeId: int | None = Field(default=None, primary_key=True)
     LastName: str
     FirstName: str
     Title: str | None = Field(default=None)
@@ -54,13 +54,13 @@ class Employee(SQLModel, table=True):
 
 
 class Genre(SQLModel, table=True):
-    GenreID: int | None = Field(default=None, primary_key=True)
+    GenreId: int | None = Field(default=None, primary_key=True)
     Name: str | None = Field(default=None)
 
 
 class Invoice(SQLModel, table=True):
     InvoiceId: int | None = Field(default=None, primary_key=True)
-    CustomerId: str = Field(foreign_key="Customer.CustomerId")
+    CustomerId: int = Field(foreign_key="Customer.CustomerId")
     InvoiceDate: date
     BillingAddress: str | None = Field(default=None)
     BillingCity: str | None = Field(default=None)
@@ -90,19 +90,19 @@ class Playlist(SQLModel, table=True):
 
 class PlaylistTrack(SQLModel, table=True):
     PlaylistId: int | None = Field(
-        default=None, primary_key=True, foreign_key="Playlist.id"
+        default=None, primary_key=True, foreign_key="Playlist.PlaylistId"
     )
     TrackId: int | None = Field(
-        default=None, primary_key=True, foreign_key="Track.id"
+        default=None, primary_key=True, foreign_key="Track.TrackId"
     )
 
 
 class Track(SQLModel, table=True):
-    TrackId: int | None = Field(alias="", primary_key=True)
+    TrackId: int | None = Field(default=None, primary_key=True)
     Name: str
-    AlbumId: int = Field(alias="", foreign_key="Album.AlbumId")
-    MediaTypeId: int = Field(alias="", foreign_key="MediaType.MediaTypeId")
-    GenreId: int = Field(alias="", foreign_key="Genre.GenreId")
+    AlbumId: int | None = Field(default=None, foreign_key="Album.AlbumId")
+    MediaTypeId: int = Field(foreign_key="MediaType.MediaTypeId")
+    GenreId: int | None = Field(default=None, foreign_key="Genre.GenreId")
     Composer: str | None = Field(default=None)
     Milliseconds: int
     Bytes: int | None = Field(default=None)
