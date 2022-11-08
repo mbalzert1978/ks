@@ -1,7 +1,17 @@
 from typing import Generator
-
-from .table import Attribute, ForeignKey, PrimaryKey, TableClass
+from collections import namedtuple
+from .table import (
+    TableClass,
+    Attribute,
+    PrimaryKey,
+    ForeignKey,
+    NullForeignKey,
+    PrimaryWithForeignKey,
+    NullBase,
+)
 from .db_connection import query_get_all
+
+FK = namedtuple("FK", ["name", "from_table", "to"])
 
 
 def get_model_str(db: str) -> str:
@@ -28,7 +38,7 @@ def get_tables() -> Generator[TableClass, None, None]:
         yield TableClass(name=name)
 
 
-def get_pks(table: str) -> Generator[PrimaryKey, None, None]:
+def get_pks(table: str) -> Generator[str, None, None]:
     query = (
         "SELECT l.name FROM pragma_table_info('%s') "
         "as l WHERE l.pk <> 0;" % table
@@ -36,15 +46,15 @@ def get_pks(table: str) -> Generator[PrimaryKey, None, None]:
     result = query_get_all(DB, query)
     for pk in result:
         name, *_ = pk
-        yield PrimaryKey(name=name)
+        yield name
 
 
-def get_fks(table: str) -> Generator[ForeignKey, None, None]:
+def get_fks(table: str) -> Generator[FK, None, None]:
     query = "SELECT * FROM pragma_foreign_key_list('%s');" % table
     result = query_get_all(DB, query)
     for fk in result:
         _, _, from_table, name, to, *_ = fk
-        yield ForeignKey(name=name, from_table=from_table, to=to)
+        yield FK(name=name, from_table=from_table, to=to)
 
 
 def generate_attributes(table: str) -> Generator[Attribute, None, None]:
@@ -52,15 +62,36 @@ def generate_attributes(table: str) -> Generator[Attribute, None, None]:
     result = query_get_all(DB, query)
     for field in result:
         _, name, type_, not_null, *_ = field
-        pk = next((obj for obj in get_pks(table) if obj.name == name), "")
-        fk = next((obj for obj in get_fks(table) if obj.name == name), "")
-        yield Attribute(
-            name=name,
-            type=get_type(type_),
-            not_null=bool(not_null),
-            primary_key=pk,
-            foreign_key=fk,
-        )
+        pk = next((obj for obj in get_pks(table) if obj == name), None)
+        fk = next((obj for obj in get_fks(table) if obj.name == name), None)
+        if pk and fk:
+            yield PrimaryWithForeignKey(
+                name=name,
+                type=get_type(type_),
+                from_table=fk.from_table,
+                to=fk.to,
+            )
+        elif pk and not fk:
+            yield PrimaryKey(name=name, type=get_type(type_))
+        elif fk and not_null:
+            yield NullForeignKey(
+                name=name,
+                type=get_type(type_),
+                from_table=fk.from_table,
+                to=fk.to,
+            )
+        elif fk and not not_null:
+            yield ForeignKey(
+                name=name,
+                type=get_type(type_),
+                from_table=fk.from_table,
+                to=fk.to,
+            )
+        elif not not_null:
+            yield NullBase(name=name, type=get_type(type_))
+
+        else:
+            yield Attribute(name=name, type=get_type(type_))
 
 
 def get_header() -> list[str]:

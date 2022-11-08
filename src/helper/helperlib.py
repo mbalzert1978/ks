@@ -6,13 +6,13 @@ from pathlib import Path
 import black
 
 
-def save_model_to_file(model: str):
+def save_model_to_file(model: str) -> None:
     with Path(Path.cwd() / "model.py") as file:
         file.touch()
         file.write_text(model)
 
 
-def get_connect_kwargs(options):
+def get_connect_kwargs(options) -> dict:
     ops = ("host", "port", "user")
     kwargs = dict((o, getattr(options, o)) for o in ops if getattr(options, o))
     if options.password:

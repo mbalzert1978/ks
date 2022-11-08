@@ -1,55 +1,5 @@
+from __future__ import annotations
 from dataclasses import dataclass, field
-from .base import Null, Field
-
-
-@dataclass
-class PrimaryKey:
-    name: str
-
-    def __str__(self) -> str:
-        return "primary_key=True"
-
-
-@dataclass
-class ForeignKey:
-    name: str
-    from_table: str
-    to: str
-
-    def __str__(self) -> str:
-        return f"foreign_key='{self.from_table}.{self.to}'"
-
-
-@dataclass
-class Attribute:
-    name: str
-    type: str
-    primary_key: PrimaryKey | str
-    foreign_key: ForeignKey | str
-    not_null: bool = False
-
-    def __str__(self) -> str:
-        if self.primary_key:
-            return str(
-                Null(
-                    name=self.name,
-                    type=self.type,
-                    hook=[str(self.primary_key), str(self.foreign_key)],
-                )
-            )
-        if self.foreign_key and self.not_null:
-            return str(
-                Field(
-                    name=self.name, type=self.type, hook=str(self.foreign_key)
-                )
-            )
-        if self.foreign_key or not self.not_null:
-            return str(
-                Null(
-                    name=self.name, type=self.type, hook=str(self.foreign_key)
-                )
-            )
-        return f"{self.name}:{self.type}"
 
 
 @dataclass
@@ -61,3 +11,61 @@ class TableClass:
         return f"class {self.name}(SQLModel, table=True):\n" + "".join(
             f"    {sentence}\n" for sentence in self.attributes
         )
+
+
+@dataclass
+class Attribute:
+    name: str
+    type: str
+
+    def __str__(self) -> str:
+        return f"{self.name}:{self.type}"
+
+
+class FieldBase(Attribute):
+    def __str__(self, hook: str = "") -> str:
+        base = f" = Field({hook})"
+        return super().__str__() + base
+
+
+class NullBase(Attribute):
+    def __str__(self, hook: str = "") -> str:
+        base = f" | None = Field(default=None, {hook})"
+        return super().__str__() + base
+
+
+@dataclass
+class PrimaryKey(NullBase):
+    def __str__(self, hook: str = "") -> str:
+        base = f"primary_key=True{hook}"
+        return super().__str__(hook=base)
+
+
+@dataclass
+class NullForeignKey(NullBase):
+    from_table: str = field(repr=False)
+    to: str = field(repr=False)
+
+    def __str__(self) -> str:
+        base = f"foreign_key='{self.from_table}.{self.to}'"
+        return super().__str__(hook=base)
+
+
+@dataclass
+class PrimaryWithForeignKey(PrimaryKey):
+    from_table: str = field(repr=False)
+    to: str = field(repr=False)
+
+    def __str__(self) -> str:
+        base = f", foreign_key='{self.from_table}.{self.to}'"
+        return super().__str__(hook=base)
+
+
+@dataclass
+class ForeignKey(FieldBase):
+    from_table: str = field(repr=False)
+    to: str = field(repr=False)
+
+    def __str__(self) -> str:
+        base = f"foreign_key='{self.from_table}.{self.to}'"
+        return super().__str__(hook=base)
