@@ -1,30 +1,9 @@
 import getpass
-import io
 import string
 import sys
-from contextlib import redirect_stdout
 from pathlib import Path
 
 import black
-import peewee as pw
-from pwiz import make_introspector, print_models
-
-
-def extract_header(table: pw.ModelBase) -> list[str]:
-    header = list(table.select().dicts()[0].keys())
-    return header
-
-
-def get_model_str(args):
-    ispector = make_introspector("sqlite", args[-1])
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        print_models(ispector)
-    return buffer.getvalue()
-
-
-def replace_unknown_fields_to_text_fields(model: str):
-    return model[:158] + model[159:].replace(r"UnknownField", r"TextField")
 
 
 def save_model_to_file(model: str):
@@ -50,7 +29,7 @@ def format_str(model: str):
     return black.format_str(
         model,
         mode=black.Mode(
-            target_versions={black.TargetVersion.PY36},
+            target_versions={black.TargetVersion.PY310},
             line_length=79,
             string_normalization=False,
             is_pyi=False,
