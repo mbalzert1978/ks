@@ -1,17 +1,6 @@
-from src.helper.model.table import (
-    NullForeignKey,
-    PrimaryKey,
-    PrimaryWithForeignKey,
-)
+from src.helper.model.model_creator import *
 
-n_key = NullForeignKey(
-    from_table="Artist", to="AlbumID", name="AlbumID", type="int"
-)
-p_k = PrimaryKey(name="Name", type="int")
-pf = PrimaryWithForeignKey(
-    name="AlbumID", type="int", from_table="Artist", to="AlbumID"
-)
+atr = Attribute("AlbumID", "str", null=Null(True))
 
-print(n_key)
-print(p_k)
-print(pf)
+
+print(atr)

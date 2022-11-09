@@ -1,12 +1,14 @@
 import sys
 
-from src.helper.helperlib import err, format_str, save_model_to_file
-
-from .model.create_model import get_model_str
+from .helperlib import err, format_str, save_model_to_file
+from .model.model_creator import Creator
+from .model.sqlite_connection import Sq3LiteConnection
 
 
 def create_model(args) -> str:
-    model = get_model_str(args)
+    sqlite = Sq3LiteConnection(db=args)
+    create = Creator(sqlite)
+    model = create.create_model()
     model = format_str(model)
     return model
 
