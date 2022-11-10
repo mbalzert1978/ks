@@ -1,7 +1,7 @@
 import sys
 
 from src.helper.helperlib import Validator, err
-from src.parser.option_parser import get_main_parser
+from src.parser.parser import get_main_parser
 
 
 if __name__ == "__main__":

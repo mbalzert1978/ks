@@ -1,8 +1,5 @@
-import sys
-
-from src.parser.option_parser import get_create_model_parser
-
-from .helperlib import err, format_str, save_model_to_file
+from ..parser.parser import get_create_model_parser
+from .helperlib import format_str, save_model_to_file
 from .model.model_creator import Creator
 from .model.sqlite_connection import Sq3LiteConnection
 
