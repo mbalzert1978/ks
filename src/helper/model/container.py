@@ -20,7 +20,7 @@ class ClassRepresentation:
 class PrimaryKey:
     name: str = field(default="")
 
-    def get(self) -> str:
+    def __str__(self) -> str:
         if self.name:
             return "primary_key=True"
         return ""
@@ -30,7 +30,7 @@ class PrimaryKey:
 class Null:
     null: bool = field(default=False)
 
-    def get(self) -> str:
+    def __str__(self) -> str:
         if self.null:
             return ""
         return "default=None"
@@ -42,7 +42,7 @@ class ForeignKey:
     from_table: str = field(default="", repr=False)
     to: str = field(default="", repr=False)
 
-    def get(self) -> str:
+    def __str__(self) -> str:
         if self.name:
             return f"foreign_key='{self.from_table}.{self.to}'"
         return ""
@@ -70,12 +70,16 @@ class Attribute:
         return self.type
 
     def get_field(self) -> str:
-        parts = []
-        for item in [self.null, self.primary, self.foreign]:
-            part = item.get()
-            if not part:
-                continue
-            parts.append(part)
-        if any(parts):
+        fields = [
+            "null",
+            "primary",
+            "foreign",
+        ]
+        parts = [
+            str(value)
+            for value in [getattr(self, field) for field in fields]
+            if str(value)
+        ]
+        if parts:
             return f" = Field({', '.join(parts)})"
         return ""
