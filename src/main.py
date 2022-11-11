@@ -3,7 +3,6 @@ from .helper.helperlib import Validator, err
 from .parser.parser import get_main_parser
 from .extractor.extractor import Extractor
 from .facade.csv import CSV
-import model
 
 
 def main() -> None:
