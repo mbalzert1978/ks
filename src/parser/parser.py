@@ -7,11 +7,10 @@ def get_main_parser() -> argparse.ArgumentParser:
     ap = parser.add_argument
     ap(
         dest="database",
-        help="URI of the database you want to access.",
+        help="URI of the database you want to access."
+        "Example: 'sqlite:///database.db'",
     )
     ap(
-        "-t",
-        "--table",
         dest="table",
         help="Name of the table you want to access.",
     )
@@ -26,16 +25,8 @@ def get_main_parser() -> argparse.ArgumentParser:
         "-f",
         "--filename",
         dest="filename",
-        help="The filename to use for the output.csv file."
-        "Default = 'tablename.csv'",
+        help="The filename to use for the output.csv file.",
         default=False,
-    )
-    ap(
-        "-c",
-        "--csv",
-        action="store_true",
-        dest="csv",
-        help="Extract the given table to an .csv file",
     )
     return parser
 

@@ -1,6 +1,8 @@
 from pathlib import Path
 import sqlite3
 
+from src.helper.helperlib import str_to_path
+
 
 class Sq3LiteConnection:
     def __init__(self, db: str) -> None:
@@ -15,8 +17,7 @@ class Sq3LiteConnection:
         return con.cursor()
 
     def _is_valid_db(self, value: str) -> bool:
-        resolve = Path(value)
-        db = resolve.resolve()
+        db: Path = str_to_path(value)
         if not db.is_file():
             return False
         with open(db, "rb") as fd:

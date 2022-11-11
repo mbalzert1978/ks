@@ -20,6 +20,11 @@ def get_connect_kwargs(options) -> dict:
     return kwargs
 
 
+def str_to_path(value: str) -> Path:
+    resolve = Path(value)
+    return resolve.resolve()
+
+
 def err(msg) -> None:
     sys.stderr.write("\033[91m%s\033[0m\n" % msg)
     sys.stderr.flush()
@@ -37,7 +42,7 @@ def format_str(model: str):
     )
 
 
-def fix_file_extension_csv(filename: str) -> str:
+def fix_suffix_csv(filename: str) -> str:
     """
     checks the given filename for the extension .csv
     and appends it if necessary.
