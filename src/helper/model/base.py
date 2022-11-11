@@ -1,7 +1,7 @@
 from typing import Protocol
 
 
-class Connection(Protocol):
+class Repository(Protocol):
     def _is_valid_db(self, value: str) -> bool:
         ...
 
