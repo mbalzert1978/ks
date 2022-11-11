@@ -1,7 +1,7 @@
 import csv
 from typing import TYPE_CHECKING
 
-from ..helper.helperlib import fix_suffix_csv, str_to_path, create_file
+from ..helper.helperlib import fix_suffix, str_to_path, create_file
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -9,13 +9,13 @@ if TYPE_CHECKING:
     from sqlmodel import SQLModel
 
 
-class CSV:
+class CsvWriter:
     def __init__(self, data: list["SQLModel"]) -> None:
         self._subsystem = csv
         self._data = data
 
     def write(self, filename: str, delimiter: str = ";") -> None:
-        filename = fix_suffix_csv(filename)
+        filename = fix_suffix(filename, ".csv")
         file: "Path" = str_to_path(filename)
         create_file(file)
         with file.open("w") as csvfile:
