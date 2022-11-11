@@ -42,15 +42,13 @@ def format_str(model: str):
     )
 
 
-def fix_suffix_csv(filename: str) -> str:
+def fix_suffix(filename: str, ext: str) -> str:
     """
-    checks the given filename for the extension .csv
+    checks the given filename for the extension `ext`
     and appends it if necessary.
     :filename:`str`
     """
-    if not filename.endswith(".csv"):
-        filename += ".csv"
-    return filename
+    return filename if filename.endswith(ext) else filename + ext
 
 
 def create_file(file: Path) -> None:
