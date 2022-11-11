@@ -1,5 +1,5 @@
 import sys
-from src.helper.helperlib import Validator, err
+from .helper.helperlib import Validator, err
 from .parser.parser import get_main_parser
 from .extractor.extractor import Extractor
 from .facade.csv import CSV
