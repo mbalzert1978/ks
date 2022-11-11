@@ -1,8 +1,10 @@
 import sys
+
+from src.facade.json import JsonWriter
 from .helper.helperlib import Validator, err
 from .parser.parser import get_main_parser
 from .extractor.extractor import Extractor
-from .facade.csv import CSV
+from .facade.csv import CsvWriter
 
 
 def main() -> None:
@@ -29,8 +31,12 @@ def main() -> None:
 def get_table(args, model) -> None:
     sql = Extractor(model, args.database)
     result = sql.select_table(args.table)
-    if args.filename:
-        csv = CSV(result)
-        csv.write(args.filename, args.delimiter)
-    else:
+    if not args.filename:
         print(result)
+        return
+    if not args.csv:
+        json = JsonWriter(result)
+        json.write(args.filename)
+    else:
+        csv = CsvWriter(result)
+        csv.write(args.filename, args.delimiter)
