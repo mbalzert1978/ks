@@ -1,13 +1,7 @@
 from __future__ import annotations
 
 from .base import Repository
-from .container import (
-    Attribute,
-    ClassRepresentation,
-    ForeignKey,
-    Null,
-    PrimaryKey,
-)
+from .container import Attribute, ClassRepresentation, ForeignKey, Null, PrimaryKey
 
 
 class Creator:
@@ -63,9 +57,7 @@ class Creator:
                 Attribute(
                     name=name,
                     type=self._get_type(type_),
-                    primary=PrimaryKey(name=name)
-                    if bool(pk)
-                    else PrimaryKey(),
+                    primary=PrimaryKey(name=name) if bool(pk) else PrimaryKey(),
                     foreign=foreign_keys.get(name, ForeignKey()),
                     null=not_null,
                 )

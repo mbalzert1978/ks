@@ -10,9 +10,7 @@ class ClassRepresentation:
 
     def __str__(self) -> str:
         base = f"class {self.name}(SQLModel, table=True):\n"
-        attributes = "".join(
-            f"    {sentence}\n" for sentence in self.attributes
-        )
+        attributes = "".join(f"    {sentence}\n" for sentence in self.attributes)
         return base + attributes
 
 

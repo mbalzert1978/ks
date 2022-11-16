@@ -1,7 +1,7 @@
 import json
 from typing import TYPE_CHECKING
 
-from ..helper.helperlib import fix_suffix, str_to_path, create_file
+from ..helper.helperlib import create_file, fix_suffix, str_to_path
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -18,6 +18,4 @@ class JsonWriter:
         filename = fix_suffix(filename, ".json")
         file: "Path" = str_to_path(filename)
         create_file(file)
-        json.dump(
-            list(x.dict() for x in self._data), fp=file.open("w"), indent=4
-        )
+        json.dump(list(x.dict() for x in self._data), fp=file.open("w"), indent=4)

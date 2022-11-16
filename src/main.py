@@ -1,10 +1,11 @@
 import sys
 
 from src.facade.json import JsonWriter
-from .helper.helperlib import Validator, err
-from .parser.parser import get_main_parser
+
 from .extractor.extractor import Extractor
 from .facade.csv import CsvWriter
+from .helper.helperlib import Validator, err
+from .parser.parser import get_main_parser
 
 
 def main() -> None:

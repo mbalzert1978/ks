@@ -1,7 +1,8 @@
 from __future__ import annotations
+
 from datetime import date
-from sqlmodel import SQLModel
-from sqlmodel import Field
+
+from sqlmodel import Field, SQLModel
 
 
 class _Sqlite_Master(SQLModel, table=True):
@@ -37,9 +38,7 @@ class Customer(SQLModel, table=True):
     Phone: str | None = Field(default=None)
     Fax: str | None = Field(default=None)
     Email: str
-    SupportRepId: int | None = Field(
-        default=None, foreign_key="Employee.EmployeeId"
-    )
+    SupportRepId: int | None = Field(default=None, foreign_key="Employee.EmployeeId")
 
 
 class Employee(SQLModel, table=True):
@@ -47,9 +46,7 @@ class Employee(SQLModel, table=True):
     LastName: str
     FirstName: str
     Title: str | None = Field(default=None)
-    ReportsTo: int | None = Field(
-        default=None, foreign_key="Employee.EmployeeId"
-    )
+    ReportsTo: int | None = Field(default=None, foreign_key="Employee.EmployeeId")
     BirthDate: date | None = Field(default=None)
     HireDate: date | None = Field(default=None)
     Address: str | None = Field(default=None)
