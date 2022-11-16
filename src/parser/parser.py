@@ -10,8 +10,16 @@ def get_main_parser() -> argparse.ArgumentParser:
         help="URI of the database you want to access."
         "Example: 'sqlite:///database.db'",
     )
-    ap(dest="table", help="Name of the table you want to access.", type=str)
     ap(
+        "-t",
+        "--table",
+        dest="table",
+        help="Name of the table you want to access.",
+        default="",
+    )
+    ap(
+        "-f",
+        "--filename",
         dest="filename",
         help="The filename to use for the output file. Default = 'tablename.csv'",
         default="",

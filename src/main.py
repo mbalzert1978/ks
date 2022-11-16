@@ -30,7 +30,7 @@ def main() -> None:
 
 def get_table(args, model) -> None:
     sql = Extractor(model, args.database)
-    result = sql.select_table(args.table)
+    result = sql.select_table(args.table if args.table else "_Sqlite_Master")
     if not args.filename:
         print(result)
         return

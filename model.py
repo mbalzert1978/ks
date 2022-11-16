@@ -4,10 +4,19 @@ from sqlmodel import SQLModel
 from sqlmodel import Field
 
 
+class _Sqlite_Master(SQLModel, table=True):
+    cid: str | None
+    type: str | None
+    name: str | None
+    tbl_name: str | None
+    rootpage: int | None = Field(default=None, primary_key=True)
+    sql: str | None
+
+
 class Album(SQLModel, table=True):
     AlbumId: int | None = Field(default=None, primary_key=True)
     Title: str
-    ArtistId: int = Field(foreign_key='Artist.ArtistId')
+    ArtistId: int = Field(foreign_key="Artist.ArtistId")
 
 
 class Artist(SQLModel, table=True):
@@ -29,7 +38,7 @@ class Customer(SQLModel, table=True):
     Fax: str | None = Field(default=None)
     Email: str
     SupportRepId: int | None = Field(
-        default=None, foreign_key='Employee.EmployeeId'
+        default=None, foreign_key="Employee.EmployeeId"
     )
 
 
@@ -39,7 +48,7 @@ class Employee(SQLModel, table=True):
     FirstName: str
     Title: str | None = Field(default=None)
     ReportsTo: int | None = Field(
-        default=None, foreign_key='Employee.EmployeeId'
+        default=None, foreign_key="Employee.EmployeeId"
     )
     BirthDate: date | None = Field(default=None)
     HireDate: date | None = Field(default=None)
@@ -60,7 +69,7 @@ class Genre(SQLModel, table=True):
 
 class Invoice(SQLModel, table=True):
     InvoiceId: int | None = Field(default=None, primary_key=True)
-    CustomerId: int = Field(foreign_key='Customer.CustomerId')
+    CustomerId: int = Field(foreign_key="Customer.CustomerId")
     InvoiceDate: date
     BillingAddress: str | None = Field(default=None)
     BillingCity: str | None = Field(default=None)
@@ -72,8 +81,8 @@ class Invoice(SQLModel, table=True):
 
 class InvoiceLine(SQLModel, table=True):
     InvoiceLineId: int | None = Field(default=None, primary_key=True)
-    InvoiceId: int = Field(foreign_key='Invoice.InvoiceId')
-    TrackId: int = Field(foreign_key='Track.TrackId')
+    InvoiceId: int = Field(foreign_key="Invoice.InvoiceId")
+    TrackId: int = Field(foreign_key="Track.TrackId")
     UnitPrice: str
     Quantity: int
 
@@ -90,19 +99,19 @@ class Playlist(SQLModel, table=True):
 
 class PlaylistTrack(SQLModel, table=True):
     PlaylistId: int | None = Field(
-        default=None, primary_key=True, foreign_key='Playlist.PlaylistId'
+        default=None, primary_key=True, foreign_key="Playlist.PlaylistId"
     )
     TrackId: int | None = Field(
-        default=None, primary_key=True, foreign_key='Track.TrackId'
+        default=None, primary_key=True, foreign_key="Track.TrackId"
     )
 
 
 class Track(SQLModel, table=True):
     TrackId: int | None = Field(default=None, primary_key=True)
     Name: str
-    AlbumId: int | None = Field(default=None, foreign_key='Album.AlbumId')
-    MediaTypeId: int = Field(foreign_key='MediaType.MediaTypeId')
-    GenreId: int | None = Field(default=None, foreign_key='Genre.GenreId')
+    AlbumId: int | None = Field(default=None, foreign_key="Album.AlbumId")
+    MediaTypeId: int = Field(foreign_key="MediaType.MediaTypeId")
+    GenreId: int | None = Field(default=None, foreign_key="Genre.GenreId")
     Composer: str | None = Field(default=None)
     Milliseconds: int
     Bytes: int | None = Field(default=None)
